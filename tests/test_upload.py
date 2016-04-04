@@ -1,19 +1,21 @@
 import pytest
 from StringIO import StringIO
-
+from capstone_server import Record
 
 @pytest.mark.parametrize("contents, filename, valid", [
-    ('asdfadsfasdfa', "something.csv", False),
-    ("0,0,0,0,0,0", "something.csv", True),
-    ("0,0,0,0,0,0", "something.gif", False)
+    ('0,', "something.csv", False),
+    ("0,0,0,0,0,0,0,0,0,0,0,0", "something.gif", False),
+    ("somebytesformacid,2015-03-01,0,0,0,0,0,0,0,0,0,0", "something.csv", True)
 ])
-def test_upload(client, contents, filename, valid):
+def test_upload(client, contents, filename, valid, session):
     data = {
         'file': (StringIO(contents), filename),
     }
     r = client.post('/upload', data=data)
-
+    print(r.data)
     if valid:
         assert r.status_code == 200
+        assert session.query(Record).count() > 0
     else:
         assert r.status_code == 400
+        assert session.query(Record).count() == 0
