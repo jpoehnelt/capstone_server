@@ -6,8 +6,8 @@ import os
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:@localhost:5432/mdc"
-app.config['SECRET_KEY'] = os.environ.get('SQLALCHEMY_DATABASE_URI', 'not-a-secret')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("SQLALCHEMY_DATABASE_URI")
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'not-a-secret')
 
 
 # initiate sqlalchemy
