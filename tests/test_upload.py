@@ -5,7 +5,7 @@ from capstone_server import Record
 @pytest.mark.parametrize("contents, filename, valid", [
     ('0,', "something.csv", False),
     ("0,0,0,0,0,0,0,0,0,0,0,0", "something.gif", False),
-    ("somebytesformacid,2015-03-01,0,0,0,0,0,0,0,0,0,0", "something.csv", True)
+    ("somebytesformacid,1460322897002,0,0,0,0,0,0,0,0,0,0", "something.csv", True)
 ])
 def test_upload(client, contents, filename, valid, session):
     data = {
