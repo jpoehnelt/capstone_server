@@ -43,13 +43,14 @@ class Record(db.Model):
     def from_csv(mac_id, date_captured, gyro_x, gyro_y, gyro_z, accel_x, accel_y, accel_z,
                  force_1, force_2, force_3, force_4):
         data = locals()
-
+        print(data)
         return Record(**data)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
+        print(request.__dict__)
         f = request.files['file']
 
         if file is None or f.filename.split('.')[-1].lower() != 'csv':
@@ -60,16 +61,20 @@ def upload():
         n = 0
         for i, row in enumerate(reader):
             # create record from row
-            try:
-                row[1] = datetime.datetime.fromtimestamp(int(row[1]) / 1000).strftime(
-                    '%Y-%m-%d %H:%M:%S.%f')  # timestamp in milliseconds
-                print("row: %s" % (",".join(row),))
-                r = Record.from_csv(*row)
-            except (TypeError, ValueError) as e:
-                print("CSV Bad Row %s" % "row: %s" % (",".join(row),))
-                raise BadRequest(description="CSV Bad Row %s" % "row: %s" % (",".join(row),))
-            else:
-                db.session.add(r)
+            print(row)
+            # try:
+            #
+            #     print("row: %s" % (",".join(row),))
+
+            row[1] = datetime.datetime.fromtimestamp(int(row[1]) / 1000.0).strftime(
+                '%Y-%m-%d %H:%M:%S.%f')  # timestamp in milliseconds
+            r = Record.from_csv(*row)
+            # except (TypeError, ValueError) as e:
+            #     print(type(e))
+            #     # print("CSV Bad Row %s" % "row: %s" % (",".join(row),))
+            #     raise BadRequest(description="CSV Bad Row %s" % "row: %s" % (",".join(row),))
+            # else:
+            db.session.add(r)
 
             # keep count
             n = i
