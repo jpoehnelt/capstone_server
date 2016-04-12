@@ -50,11 +50,14 @@ class Record(db.Model):
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
     if request.method == 'POST':
-        print(request.__dict__)
-        f = request.files['file']
+        print(request.files)
+        f = request.files.get('file', None)
+        if f is None:
+            raise BadRequest(description="No CSV File Found by name 'file'. Check form field name.")
 
-        if file is None or f.filename.split('.')[-1].lower() != 'csv':
-            raise BadRequest(description="CSV File Required")
+        if f.filename.split('.')[-1].lower() != 'csv':
+            print(f.filename.split('.')[-1].lower())
+            raise BadRequest(description="Bad CSV File Name")
 
         reader = csv.reader(f, delimiter=',')
 
